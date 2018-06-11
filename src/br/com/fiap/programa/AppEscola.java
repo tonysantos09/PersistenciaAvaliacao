@@ -45,10 +45,12 @@ public class AppEscola {
 		try {
 			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
 			JdbcEscolaDao dao = (JdbcEscolaDao) context.getBean("jdbcEscolaDao");
+
 			Escola escola = new Escola();
-			escola.setDescricao("Fiap Tecnologia");
-			escola.setDataString("01/02/1990");
-			escola.setEndereco("Av Paulista");
+			escola.setDescricao(JOptionPane.showInputDialog("Descrição da escola"));
+			escola.setDataString(JOptionPane.showInputDialog("Data de Fundação"));
+			escola.setEndereco(JOptionPane.showInputDialog("Endereço da escola"));
+
 			dao.incluirEscola(escola);
 			JOptionPane.showMessageDialog(null, "Escola incluída com sucesso");
 		} catch (Exception e) {
@@ -60,13 +62,24 @@ public class AppEscola {
 		try {
 			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
 			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolas();
-			Escola escola = escolas.get(0);
+
+			Escola escola = (Escola) JOptionPane.showInputDialog(null, 
+					"Selecione a escola", 
+					"Escolas",
+					JOptionPane.INFORMATION_MESSAGE, 
+					null, 
+					escolas.toArray(),
+					null);
+
 			JdbcCursoDao dao = (JdbcCursoDao) context.getBean("jdbcCursoDao");
+
 			Curso curso = new Curso();
-			curso.setDescricao("MBA Full Stack");
+			curso.setDescricao(JOptionPane.showInputDialog("Descrição do curso"));
 			curso.setEscola(escola);
-			dao.incluirCurso(curso);
-			JOptionPane.showMessageDialog(null, "Escola incluída com sucesso");
+
+			((JdbcCursoDao) context.getBean("jdbcCursoDao")).incluirCurso(curso);
+			JOptionPane.showMessageDialog(null, "Curso incluído com sucesso");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
