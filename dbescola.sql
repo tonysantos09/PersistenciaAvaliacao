@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `dbescola` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `dbescola`;
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: dbescola
@@ -25,10 +27,11 @@ DROP TABLE IF EXISTS `aluno`;
 CREATE TABLE `aluno` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) NOT NULL,
-  `idcurso` int(11) NOT NULL,
+  `idescola` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `FK_IDCURSO_IDALUNO` FOREIGN KEY (`id`) REFERENCES `curso` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `FK_IDESCOLA_IDALUNO_idx` (`idescola`),
+  CONSTRAINT `FK_IDESCOLA_IDALUNO` FOREIGN KEY (`idescola`) REFERENCES `escola` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,6 +40,7 @@ CREATE TABLE `aluno` (
 
 LOCK TABLES `aluno` WRITE;
 /*!40000 ALTER TABLE `aluno` DISABLE KEYS */;
+INSERT INTO `aluno` VALUES (5,'AlunoFIAP 01',1),(6,'AlunoMEDIO 01',2);
 /*!40000 ALTER TABLE `aluno` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,7 +58,7 @@ CREATE TABLE `curso` (
   PRIMARY KEY (`id`),
   KEY `FK_IDESCOLA_IDCURSO_idx` (`idescola`),
   CONSTRAINT `FK_IDESCOLA_IDCURSO` FOREIGN KEY (`idescola`) REFERENCES `escola` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +67,7 @@ CREATE TABLE `curso` (
 
 LOCK TABLES `curso` WRITE;
 /*!40000 ALTER TABLE `curso` DISABLE KEYS */;
-INSERT INTO `curso` VALUES (1,1,'MBA Full Stack');
+INSERT INTO `curso` VALUES (1,1,'MBA Full Stack'),(2,1,'Teste');
 /*!40000 ALTER TABLE `curso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,7 +84,7 @@ CREATE TABLE `escola` (
   `endereco` varchar(60) NOT NULL,
   `datafundacao` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,8 +93,35 @@ CREATE TABLE `escola` (
 
 LOCK TABLES `escola` WRITE;
 /*!40000 ALTER TABLE `escola` DISABLE KEYS */;
-INSERT INTO `escola` VALUES (1,'Fiap Tecnologia','Av Paulista','1990-02-01 00:00:00');
+INSERT INTO `escola` VALUES (1,'Fiap Tecnologia','Av Paulista','1990-02-01 00:00:00'),(2,'Ensino Medio','Av Ensino Medio 01','2002-10-01 00:00:00');
 /*!40000 ALTER TABLE `escola` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `matricula`
+--
+
+DROP TABLE IF EXISTS `matricula`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `matricula` (
+  `idcurso` int(11) NOT NULL,
+  `idaluno` int(11) NOT NULL,
+  PRIMARY KEY (`idcurso`,`idaluno`),
+  KEY `FK_IDALUNO_idx` (`idaluno`),
+  CONSTRAINT `FK_IDALUNO` FOREIGN KEY (`idaluno`) REFERENCES `aluno` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_IDCURSO` FOREIGN KEY (`idcurso`) REFERENCES `curso` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `matricula`
+--
+
+LOCK TABLES `matricula` WRITE;
+/*!40000 ALTER TABLE `matricula` DISABLE KEYS */;
+INSERT INTO `matricula` VALUES (1,5);
+/*!40000 ALTER TABLE `matricula` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -104,13 +135,13 @@ CREATE TABLE `nota` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idcurso` int(11) NOT NULL,
   `idaluno` int(11) NOT NULL,
-  `nota` double NOT NULL,
+  `nota` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_IDCURSO_IDNOTA_idx` (`idcurso`),
   KEY `FK_IDALUNO_IDNOTA_idx` (`idaluno`),
   CONSTRAINT `FK_IDALUNO_IDNOTA` FOREIGN KEY (`idaluno`) REFERENCES `aluno` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_IDCURSO_IDNOTA` FOREIGN KEY (`idcurso`) REFERENCES `curso` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-10 23:00:35
+-- Dump completed on 2018-06-13 15:28:57

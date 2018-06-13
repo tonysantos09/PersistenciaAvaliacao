@@ -33,4 +33,9 @@ public class Curso {
 	public void setAlunos(List<Aluno> alunos) {
 		this.alunos = alunos;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getDescricao();
+	}
 }

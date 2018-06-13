@@ -3,7 +3,7 @@ package br.com.fiap.entidades;
 public class Aluno {
 	private int id;
 	private String nome;
-	private Curso curso;
+	private Escola escola;
 	
 	public int getId() {
 		return id;
@@ -17,11 +17,15 @@ public class Aluno {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public Curso getCurso() {
-		return curso;
-	}
-	public void setCurso(Curso curso) {
-		this.curso = curso;
-	}
 	
+	public Escola getEscola() {
+		return escola;
+	}
+	public void setEscola(Escola escola) {
+		this.escola = escola;
+	}
+	@Override
+	public String toString() {
+		return this.getNome();
+	}
 }
