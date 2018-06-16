@@ -11,7 +11,7 @@ public class Escola {
 	private String descricao;
 	private String endereco;
 	private Date dataFundacao;
-	
+
 	private List<Curso> cursos = new ArrayList<>();
 
 	public int getId() {
@@ -53,13 +53,15 @@ public class Escola {
 	public void setCursos(List<Curso> cursos) {
 		this.cursos = cursos;
 	}
-	
-	public void setDataString(String data) {
+
+	public void setDataString(String data) throws Exception {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		try {
 			this.setDataFundacao(df.parse(data));
 		} catch (Exception e) {
-			this.setDataFundacao(new Date());
+			throw new Exception("Data Inválida");
+			//O ideal é cuspir um erro
+			//this.setDataFundacao(new Date());
 		}
 	}
 

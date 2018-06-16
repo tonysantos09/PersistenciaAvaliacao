@@ -45,8 +45,18 @@ public class JdbcEscolaDao {
 		} catch (Exception e) {
 			throw e;
 		}
-		
+
 		return escolas;
 	}
+	
+	public List<Escola> listarEscolasComCursos() throws Exception {
+		List<Escola> escolasComCursos = new ArrayList<>();
+		try {
+			escolasComCursos = this.jdbcTemplate.query("SELECT escola.* FROM escola, curso where curso.idescola = escola.id", new EscolaMapper());
+		} catch (Exception e) {
+			throw e;
+		}
 
+		return escolasComCursos;
+	}
 }

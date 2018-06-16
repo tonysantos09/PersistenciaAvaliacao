@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import br.com.fiap.entidades.Matricula;
 
-
 public class JdbcMatriculaDao {
 	private JdbcTemplate jdbcTemplate;
 
