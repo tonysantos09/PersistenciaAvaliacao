@@ -52,8 +52,9 @@ public class JdbcCursoDao {
 	public List<Curso> listarCursosComAlunos(int idescola) {
 		List<Curso> cursos = new ArrayList<>();
 		try {
-			cursos = this.jdbcTemplate.query("SELECT curso.* FROM curso, matricula "
-					+ "WHERE matricula.curso = curso.id AND curso.idescola=?", 
+			cursos = this.jdbcTemplate.query("SELECT curso.* FROM matricula LEFT JOIN curso ON "
+					+ "matricula.idcurso = curso.id WHERE matricula.idcurso = curso.id "
+					+ "AND curso.idescola=?", 
 					new Integer[] { idescola },
 					new CursoMapper());
 		} catch (Exception e) {

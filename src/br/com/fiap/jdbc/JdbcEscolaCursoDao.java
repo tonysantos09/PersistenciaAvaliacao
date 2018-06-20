@@ -21,8 +21,8 @@ public class JdbcEscolaCursoDao {
 		List<EscolaCursoViewModel> escolas = new ArrayList<>();
 		try {
 			escolas = this.jdbcTemplate.query(
-					"SELECT E.DESCRICAO AS DESCRICAO, COUNT(C.DESCRICAO) AS NUMCURSOS\r\n"
-							+ "FROM ESCOLA E, CURSO C \r\n" + "WHERE E.ID = C.IDESCOLA\r\n" + "GROUP BY E.DESCRICAO",
+					"SELECT escola.descricao, COUNT(*) AS numcursos "
+							+ "FROM curso LEFT JOIN escola ON curso.idescola = escola.id GROUP BY escola.descricao",
 					new EscolaCursoMapper());
 		} catch (Exception e) {
 			e.printStackTrace();

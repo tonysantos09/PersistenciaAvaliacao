@@ -55,9 +55,9 @@ public class JdbcAlunoDao {
 		List<Aluno> alunos = new ArrayList<>();
 		try {
 			alunos = this.jdbcTemplate.query(
-					"SELECT C.ID AS IDCURSO, C.DESCRICAO AS DESCRICAO, A.ID AS IDALUNO, A.NOME AS NOMEALUNO\r\n"
-							+ "FROM MATRICULA M, CURSO C, ALUNO A \r\n"
-							+ "WHERE C.ID = M.IDCURSO AND A.ID = M.IDALUNO AND M.IDCURSO = ?\r\n" + "GROUP BY A.NOME",
+					"SELECT DISTINCT aluno.* "
+							+ "FROM matricula LEFT JOIN aluno ON matricula.idaluno = aluno.id "
+							+ "WHERE matricula.idcurso = ?",
 					new Integer[] { idcurso }, new AlunoMapper());
 		} catch (Exception e) {
 			throw e;

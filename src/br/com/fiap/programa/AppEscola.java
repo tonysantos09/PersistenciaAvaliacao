@@ -67,7 +67,6 @@ public class AppEscola {
 					"ERRO: " + e.getMessage(),
 					"Erro, tente novamente",
 					JOptionPane.ERROR_MESSAGE);
-				continue;
 			}
 			
 			//Pergunta se quer fazer outra operação
@@ -223,15 +222,15 @@ public class AppEscola {
 					alunos.toArray(),
 					null);
 
-//			JdbcNotaDao dao = (JdbcNotaDao) context.getBean("jdbcNotaDao");
-//
-//			Nota nota = new Nota();
-//			nota.setNota(Double.parseDouble(JOptionPane.showInputDialog("Nota do aluno")));
-//			nota.setCurso(curso);
-//			nota.setAluno(aluno);
-//
-//			dao.incluirNota(nota);
-//			JOptionPane.showMessageDialog(null, "Nota incluída com sucesso");
+			JdbcMatriculaDao dao = (JdbcMatriculaDao) context.getBean("jdbcMatriculaDao");
+
+			Matricula matricula = new Matricula();
+			matricula.setNota(Integer.parseInt(JOptionPane.showInputDialog("Nota do aluno")));
+			matricula.setAluno(aluno);
+			matricula.setCurso(curso);
+			
+			dao.incluirNota(matricula);
+			JOptionPane.showMessageDialog(null, "Nota incluída com sucesso");
 
 		} catch (Exception e) {
 			throw e;
