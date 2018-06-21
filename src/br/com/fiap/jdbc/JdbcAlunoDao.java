@@ -57,7 +57,7 @@ public class JdbcAlunoDao {
 			alunos = this.jdbcTemplate.query(
 					"SELECT DISTINCT aluno.* "
 							+ "FROM matricula LEFT JOIN aluno ON matricula.idaluno = aluno.id "
-							+ "WHERE matricula.idcurso = ?",
+							+ "WHERE matricula.idcurso = ? AND nota IS NULL",
 					new Integer[] { idcurso }, new AlunoMapper());
 		} catch (Exception e) {
 			throw e;

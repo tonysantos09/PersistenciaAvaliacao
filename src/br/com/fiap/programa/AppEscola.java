@@ -2,6 +2,9 @@ package br.com.fiap.programa;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
 
 import org.springframework.context.ApplicationContext;
@@ -11,6 +14,7 @@ import br.com.fiap.entidades.Aluno;
 import br.com.fiap.entidades.Curso;
 import br.com.fiap.entidades.Escola;
 import br.com.fiap.entidades.Matricula;
+import br.com.fiap.helper.Helper;
 import br.com.fiap.jdbc.JdbcAlunoDao;
 import br.com.fiap.jdbc.JdbcCursoDao;
 import br.com.fiap.jdbc.JdbcEscolaCursoDao;
@@ -21,62 +25,49 @@ import br.com.fiap.viewmodel.EscolaCursoViewModel;
 public class AppEscola {
 	public static void main(String[] args) {
 		int opcao = JOptionPane.YES_OPTION;
-		
-		while(opcao == JOptionPane.YES_OPTION) {
-			String[] opcoes = {"Incluir Escola",
-					"Incluir Curso",
-					"Incluir Aluno",
-					"Incluir Nota",
-					"Matricula em Curso",
-					"Listar Escolas e Qtd Cursos"};
-			
-			String select = (String)JOptionPane.showInputDialog(null, 
-					"Selecione a opções desejada", 
-					"Menu",
-					JOptionPane.INFORMATION_MESSAGE, 
-					null, 
-					opcoes,
-					null);
-			
-			//Vai tentar fazer as operações e se der erro mostra mensagem
+
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("entityManagerFactory");
+		EntityManager em = emf.createEntityManager();
+
+		while (opcao == JOptionPane.YES_OPTION) {
+			String[] opcoes = { "Incluir Escola", "Incluir Curso", "Incluir Aluno", "Incluir Nota",
+					"Matricula em Curso", "Listar Escolas e Qtd Cursos" };
+
+			String select = (String) JOptionPane.showInputDialog(null, "Selecione a opções desejada", "Menu",
+					JOptionPane.INFORMATION_MESSAGE, null, opcoes, null);
+
+			// Vai tentar fazer as operações e se der erro mostra mensagem
 			try {
-				switch(select)
-				{
-					case "Incluir Escola":
-						incluirEscola();
-						break;
-					case "Incluir Curso":
-						incluirCurso();
-						break;
-					case "Incluir Aluno":
-						incluirAluno();
-						break;
-					case "Incluir Nota":
-						incluirNota();
-						break;
-					case "Matricula em Curso":
-						matricularCurso();
-						break;
-					case "Listar Escolas e Qtd Cursos":
-						listarEscolasComCursos();
-						break;
+				switch (select) {
+				case "Incluir Escola":
+					incluirEscola();
+					break;
+				case "Incluir Curso":
+					incluirCurso();
+					break;
+				case "Incluir Aluno":
+					incluirAluno();
+					break;
+				case "Incluir Nota":
+					incluirNota();
+					break;
+				case "Matricula em Curso":
+					matricularCurso();
+					break;
+				case "Listar Escolas e Qtd Cursos":
+					listarEscola(em);
+					break;
 				}
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(
-					null, 
-					"ERRO: " + e.getMessage(),
-					"Erro, tente novamente",
-					JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "ERRO: " + e.getMessage(), "Erro, tente novamente",
+						JOptionPane.ERROR_MESSAGE);
 			}
-			
-			//Pergunta se quer fazer outra operação
-			opcao = JOptionPane.showConfirmDialog(
-					null, 
-					"Deseja fazer outra operação?", 
-					"Confirmação", 
+
+			// Pergunta se quer fazer outra operação
+			opcao = JOptionPane.showConfirmDialog(null, "Deseja fazer outra operação?", "Confirmação",
 					JOptionPane.YES_NO_OPTION);
 		}
-		
+
 	}
 
 	private static void incluirEscola() throws Exception {
@@ -101,13 +92,8 @@ public class AppEscola {
 			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
 			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolas();
 
-			Escola escola = (Escola) JOptionPane.showInputDialog(null, 
-					"Selecione a escola", 
-					"Escolas",
-					JOptionPane.INFORMATION_MESSAGE, 
-					null, 
-					escolas.toArray(),
-					null);
+			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
+					JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
 
 			JdbcCursoDao dao = (JdbcCursoDao) context.getBean("jdbcCursoDao");
 
@@ -122,7 +108,7 @@ public class AppEscola {
 			throw e;
 		}
 	}
-	
+
 	private static void incluirAluno() throws Exception {
 		try {
 			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
@@ -138,42 +124,26 @@ public class AppEscola {
 			throw e;
 		}
 	}
-	
+
 	private static void matricularCurso() throws Exception {
 		try {
 			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
-			
+
 			List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarAlunos();
 
-			Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, 
-					"Selecione o aluno", 
-					"Alunos",
-					JOptionPane.INFORMATION_MESSAGE, 
-					null, 
-					alunos.toArray(),
-					null);
-			
-			//vai trazer apenas escolas com cursos criados
+			Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, "Selecione o aluno", "Alunos",
+					JOptionPane.INFORMATION_MESSAGE, null, alunos.toArray(), null);
+
+			// vai trazer apenas escolas com cursos criados
 			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
 
-			Escola escola = (Escola) JOptionPane.showInputDialog(null, 
-					"Selecione a escola", 
-					"Escolas",
-					JOptionPane.INFORMATION_MESSAGE, 
-					null, 
-					escolas.toArray(),
-					null);
-			
+			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
+					JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
+
 			List<Curso> cursos = ((JdbcCursoDao) context.getBean("jdbcCursoDao")).listarCursos(escola.getId());
 
-			Curso curso = (Curso) JOptionPane.showInputDialog(null, 
-					"Selecione o curso", 
-					"Cursos",
-					JOptionPane.INFORMATION_MESSAGE, 
-					null, 
-					cursos.toArray(),
-					null);
-			
+			Curso curso = (Curso) JOptionPane.showInputDialog(null, "Selecione o curso", "Cursos",
+					JOptionPane.INFORMATION_MESSAGE, null, cursos.toArray(), null);
 
 			JdbcMatriculaDao dao = (JdbcMatriculaDao) context.getBean("jdbcMatriculaDao");
 
@@ -188,47 +158,37 @@ public class AppEscola {
 			throw e;
 		}
 	}
-	
+
 	private static void incluirNota() throws Exception {
 		try {
 			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
 			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
 
-			Escola escola = (Escola) JOptionPane.showInputDialog(null, 
-					"Selecione a escola", 
-					"Escolas",
-					JOptionPane.INFORMATION_MESSAGE, 
-					null, 
-					escolas.toArray(),
-					null);
-			
+			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
+					JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
+
 			List<Curso> cursos = ((JdbcCursoDao) context.getBean("jdbcCursoDao")).listarCursosComAlunos(escola.getId());
 
-			Curso curso = (Curso) JOptionPane.showInputDialog(null, 
-					"Selecione o curso", 
-					"Cursos",
-					JOptionPane.INFORMATION_MESSAGE, 
-					null, 
-					cursos.toArray(),
-					null);
-			
+			Curso curso = (Curso) JOptionPane.showInputDialog(null, "Selecione o curso", "Cursos",
+					JOptionPane.INFORMATION_MESSAGE, null, cursos.toArray(), null);
+
 			List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarCursoAlunos(curso.getId());
 
-			Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, 
-					"Selecione o aluno", 
-					"Alunos",
-					JOptionPane.INFORMATION_MESSAGE, 
-					null, 
-					alunos.toArray(),
-					null);
+			Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, "Selecione o aluno", "Alunos",
+					JOptionPane.INFORMATION_MESSAGE, null, alunos.toArray(), null);
 
 			JdbcMatriculaDao dao = (JdbcMatriculaDao) context.getBean("jdbcMatriculaDao");
 
 			Matricula matricula = new Matricula();
-			matricula.setNota(Integer.parseInt(JOptionPane.showInputDialog("Nota do aluno")));
+
+			String nota = JOptionPane.showInputDialog("Nota do aluno");
+
+			double valor = Double.parseDouble(nota.replace(',', '.'));
+
+			matricula.setNota(valor);
 			matricula.setAluno(aluno);
 			matricula.setCurso(curso);
-			
+
 			dao.incluirNota(matricula);
 			JOptionPane.showMessageDialog(null, "Nota incluída com sucesso");
 
@@ -249,5 +209,14 @@ public class AppEscola {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	private static void listarEscola(EntityManager em) {
+		Helper dao = new Helper(em);
+		List<Escola> escolas = dao.listarEscola();
+		for (Escola escola : escolas) {
+			System.out.println(escola.getId() + ": " + escola.getDescricao());
+		}
+		em.close();
 	}
 }

@@ -70,7 +70,7 @@ DEFAULT CHARACTER SET = latin1;
 CREATE TABLE IF NOT EXISTS `dbescola`.`matricula` (
   `idcurso` INT(11) NOT NULL,
   `idaluno` INT(11) NOT NULL,
-  `nota` INT NULL,
+  `nota` DOUBLE NULL,
   PRIMARY KEY (`idcurso`, `idaluno`),
   CONSTRAINT `FK_IDALUNO`
     FOREIGN KEY (`idaluno`)

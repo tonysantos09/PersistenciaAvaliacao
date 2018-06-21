@@ -3,7 +3,7 @@ package br.com.fiap.entidades;
 public class Matricula {
 	private Curso curso;
 	private Aluno aluno;
-	private int nota;
+	private double nota;
 
 	public Curso getCurso() {
 		return curso;
@@ -21,11 +21,11 @@ public class Matricula {
 		this.aluno = aluno;
 	}
 
-	public int getNota() {
+	public double getNota() {
 		return nota;
 	}
 
-	public void setNota(int nota) {
+	public void setNota(double nota) {
 		this.nota = nota;
 	}
 }
