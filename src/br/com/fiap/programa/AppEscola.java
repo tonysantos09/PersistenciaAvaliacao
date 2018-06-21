@@ -225,7 +225,12 @@ public class AppEscola {
 			JdbcMatriculaDao dao = (JdbcMatriculaDao) context.getBean("jdbcMatriculaDao");
 
 			Matricula matricula = new Matricula();
-			matricula.setNota(Integer.parseInt(JOptionPane.showInputDialog("Nota do aluno")));
+			
+			String nota = JOptionPane.showInputDialog("Nota do aluno");
+			
+			double valor = Double.parseDouble(nota.replace(',','.'));
+			
+			matricula.setNota(valor);
 			matricula.setAluno(aluno);
 			matricula.setCurso(curso);
 			
