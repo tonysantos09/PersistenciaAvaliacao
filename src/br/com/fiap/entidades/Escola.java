@@ -4,15 +4,42 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name="escola")
 public class Escola {
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="id")
 	private int id;
+	
+	@Column(name="descricao", length=45)
 	private String descricao;
+
+	@Column(name="endereco", length=45)
 	private String endereco;
+	
+	@Temporal(value=TemporalType.TIMESTAMP)
+	@Column(name="dataFundacao")
 	private Date dataFundacao;
 
-	private List<Curso> cursos = new ArrayList<>();
+	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="escola")
+	private Set<Curso> cursos = new HashSet<>();
 
 	public int getId() {
 		return id;
@@ -46,11 +73,11 @@ public class Escola {
 		this.dataFundacao = dataFundacao;
 	}
 
-	public List<Curso> getCursos() {
+	public Set<Curso> getCursos() {
 		return cursos;
 	}
 
-	public void setCursos(List<Curso> cursos) {
+	public void setCursos(Set<Curso> cursos) {
 		this.cursos = cursos;
 	}
 

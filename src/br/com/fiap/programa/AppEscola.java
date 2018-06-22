@@ -2,6 +2,9 @@ package br.com.fiap.programa;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
 
 import org.springframework.context.ApplicationContext;
@@ -20,6 +23,11 @@ import br.com.fiap.viewmodel.EscolaCursoViewModel;
 
 public class AppEscola {
 	public static void main(String[] args) {
+		
+		//Descomentar essa linha para utilizar o JPA
+		//EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpaPU");
+		//EntityManager em = emf.createEntityManager();
+		
 		int opcao = JOptionPane.YES_OPTION;
 		
 		while(opcao == JOptionPane.YES_OPTION) {
