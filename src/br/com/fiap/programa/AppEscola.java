@@ -14,6 +14,7 @@ import br.com.fiap.entidades.Aluno;
 import br.com.fiap.entidades.Curso;
 import br.com.fiap.entidades.Escola;
 import br.com.fiap.entidades.Matricula;
+import br.com.fiap.helper.EscolaHelper;
 import br.com.fiap.jdbc.JdbcAlunoDao;
 import br.com.fiap.jdbc.JdbcCursoDao;
 import br.com.fiap.jdbc.JdbcEscolaCursoDao;
@@ -24,9 +25,7 @@ import br.com.fiap.viewmodel.EscolaCursoViewModel;
 public class AppEscola {
 	public static void main(String[] args) {
 		
-		//Descomentar essa linha para utilizar o JPA
-		//EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpaPU");
-		//EntityManager em = emf.createEntityManager();
+		
 		
 		int opcao = JOptionPane.YES_OPTION;
 		
@@ -51,7 +50,7 @@ public class AppEscola {
 				switch(select)
 				{
 					case "Incluir Escola":
-						incluirEscola();
+						incluirEscolaJPA();
 						break;
 					case "Incluir Curso":
 						incluirCurso();
@@ -85,6 +84,24 @@ public class AppEscola {
 					JOptionPane.YES_NO_OPTION);
 		}
 		
+	}
+	
+	private static void incluirEscolaJPA() throws Exception {
+		try {
+			EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpaPU");
+			EntityManager em = emf.createEntityManager();
+			EscolaHelper helper = new EscolaHelper(em);
+			
+			Escola escola = new Escola();
+			escola.setDescricao(JOptionPane.showInputDialog("Descrição da escola"));
+			escola.setDataString(JOptionPane.showInputDialog("Data de Fundação"));
+			escola.setEndereco(JOptionPane.showInputDialog("Endereço da escola"));
+			
+			helper.salvar(escola);
+			JOptionPane.showMessageDialog(null, "Escola incluída com sucesso");
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	private static void incluirEscola() throws Exception {
