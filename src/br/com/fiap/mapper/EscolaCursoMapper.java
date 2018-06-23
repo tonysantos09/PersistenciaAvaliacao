@@ -13,6 +13,7 @@ public class EscolaCursoMapper implements RowMapper<EscolaCursoViewModel> {
 		EscolaCursoViewModel vm = new EscolaCursoViewModel();
 		vm.setDescricao(rs.getString("descricao"));
 		vm.setNumCursos(rs.getInt("numcursos"));
+		vm.setNumAlunos(rs.getInt("numalunos"));
 		
 		return vm;
 	}

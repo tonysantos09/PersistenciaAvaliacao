@@ -52,10 +52,25 @@ public class JdbcCursoDao {
 	public List<Curso> listarCursosComAlunos(int idescola) {
 		List<Curso> cursos = new ArrayList<>();
 		try {
-			cursos = this.jdbcTemplate.query("SELECT curso.* FROM matricula LEFT JOIN curso ON "
+			cursos = this.jdbcTemplate.query("SELECT DISTINCT curso.* FROM matricula LEFT JOIN curso ON "
 					+ "matricula.idcurso = curso.id WHERE matricula.idcurso = curso.id "
 					+ "AND curso.idescola=?", 
 					new Integer[] { idescola },
+					new CursoMapper());
+		} catch (Exception e) {
+			throw e;
+		}
+
+		return cursos;
+	}
+	
+	public List<Curso> listarCursosMatricula(int idaluno) {
+		List<Curso> cursos = new ArrayList<>();
+		try {
+			cursos = this.jdbcTemplate.query("SELECT curso.* FROM curso LEFT JOIN matricula ON "
+					+ "curso.id = matricula.idcurso AND matricula.idaluno = ? "
+					+ "WHERE matricula.idaluno IS NULL", 
+					new Integer[] { idaluno },
 					new CursoMapper());
 		} catch (Exception e) {
 			throw e;
