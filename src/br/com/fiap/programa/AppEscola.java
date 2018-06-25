@@ -85,7 +85,9 @@ public class AppEscola {
 
 	private static void incluirEscolaJPA() throws Exception {
 		try {
-			EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpaPU");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+			
+			EntityManagerFactory emf = (EntityManagerFactory) context.getBean("myEmf");
 			EntityManager em = emf.createEntityManager();
 			EscolaHelper helper = new EscolaHelper(em);
 
@@ -103,7 +105,7 @@ public class AppEscola {
 
 	private static void incluirEscola() throws Exception {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 			JdbcEscolaDao dao = (JdbcEscolaDao) context.getBean("jdbcEscolaDao");
 
 			Escola escola = new Escola();
@@ -120,7 +122,7 @@ public class AppEscola {
 
 	private static void incluirCurso() throws Exception {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolas();
 
 			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
@@ -142,7 +144,7 @@ public class AppEscola {
 
 	private static void incluirAluno() throws Exception {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 			JdbcAlunoDao dao = (JdbcAlunoDao) context.getBean("jdbcAlunoDao");
 
 			Aluno aluno = new Aluno();
@@ -158,7 +160,7 @@ public class AppEscola {
 
 	private static void matricularCurso() throws Exception {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 
 			List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarAlunos();
 
@@ -192,7 +194,7 @@ public class AppEscola {
 
 	private static void incluirNota() throws Exception {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
 
 			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
@@ -230,7 +232,7 @@ public class AppEscola {
 
 	private static void listarEscolasComCursos() {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 			List<EscolaCursoViewModel> escolas = ((JdbcEscolaCursoDao) context.getBean("jdbcEscolaCursoDao"))
 					.listarEscolasComCursos();
 			for (EscolaCursoViewModel vm : escolas) {
@@ -245,7 +247,7 @@ public class AppEscola {
 
 	private static void listarCursosComAlunos() throws Exception {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
 
 			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
@@ -264,7 +266,7 @@ public class AppEscola {
 
 	private static void listarAlunosDeCurso() throws Exception {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
 
 			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
@@ -302,7 +304,7 @@ public class AppEscola {
 
 	private static void listarAlunoCursos() throws BeansException, Exception {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("beanJdbc.xml");
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 
 			List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarAlunos();
 

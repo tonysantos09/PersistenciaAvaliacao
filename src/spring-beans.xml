@@ -8,6 +8,7 @@ http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<!-- 	Configuração Banco de Dados -->
 	<bean id="cnDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName"
@@ -17,6 +18,8 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 		<property name="username" value="root" />
 		<property name="password" value="fiap" />
 	</bean>
+	
+	<!-- 	Configuração JDBC -->
 	<bean id="jdbcEscolaDao" class="br.com.fiap.jdbc.JdbcEscolaDao">
 		<property name="dataSource" ref="cnDataSource" />
 	</bean>
@@ -38,4 +41,27 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	<bean id="jdbcAlunoCursoDao" class="br.com.fiap.jdbc.JdbcAlunoCursoDao">
 		<property name="dataSource" ref="cnDataSource" />
 	</bean>
+	
+	<!-- 	Configurações JPA -->
+	
+	<bean id="myEmf"
+     class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+       <property name="dataSource" ref="cnDataSource" />
+       <property name="packagesToScan" value="br.com.fiap.entidades" />
+       <property name="jpaVendorAdapter">
+          <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+       </property>
+       <property name="jpaProperties">
+          <props>
+              <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+             <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+          </props>
+       </property>
+   </bean>
+   
+   <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+       <property name="entityManagerFactory" ref="myEmf" />
+   </bean>
+ 
+   <bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 </beans>
