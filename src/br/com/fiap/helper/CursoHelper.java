@@ -13,13 +13,9 @@ public class CursoHelper {
 	}
 
 	public String salvar(Curso curso) {
-		try {
-			em.getTransaction().begin();
-			em.persist(curso);
-			em.getTransaction().commit();
-			return "Curso incluído com sucesso!";
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		em.getTransaction().begin();
+		em.persist(curso);
+		em.getTransaction().commit();
+		return "Curso incluído com sucesso!";
 	}
 }

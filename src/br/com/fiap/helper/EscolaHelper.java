@@ -13,14 +13,10 @@ public class EscolaHelper {
 	}
 
 	public String salvar(Escola escola) {
-		try {
-			em.getTransaction().begin();
-			em.persist(escola);
-			em.getTransaction().commit();
-			return "Evento incluído com sucesso!";
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		em.getTransaction().begin();
+		em.persist(escola);
+		em.getTransaction().commit();
+		return "Evento incluído com sucesso!";
 	}
 	
 	public List<Escola> listarEscolas() {

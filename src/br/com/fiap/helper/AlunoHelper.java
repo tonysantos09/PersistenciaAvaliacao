@@ -11,13 +11,9 @@ public class AlunoHelper {
 	}
 
 	public String salvar(Aluno aluno) {
-		try {
-			em.getTransaction().begin();
-			em.persist(aluno);
-			em.getTransaction().commit();
-			return "Aluno incluído com sucesso!";
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		em.getTransaction().begin();
+		em.persist(aluno);
+		em.getTransaction().commit();
+		return "Aluno incluído com sucesso!";
 	}
 }

@@ -31,15 +31,18 @@ public class Escola {
 	@Column(name="descricao", length=45)
 	private String descricao;
 
-	@Column(name="endereco", length=45)
+	@Column(name="endereco", length=60)
 	private String endereco;
 	
 	@Temporal(value=TemporalType.TIMESTAMP)
 	@Column(name="dataFundacao")
 	private Date dataFundacao;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="escola")
-	private Set<Curso> cursos = new HashSet<>();
+//	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="escola")
+//	private Set<Curso> cursos = new HashSet<>();
+//	
+//	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="matricula")
+//	private Set<Matricula> matricula = new HashSet<>();
 
 	public int getId() {
 		return id;
@@ -72,14 +75,14 @@ public class Escola {
 	public void setDataFundacao(Date dataFundacao) {
 		this.dataFundacao = dataFundacao;
 	}
-
-	public Set<Curso> getCursos() {
-		return cursos;
-	}
-
-	public void setCursos(Set<Curso> cursos) {
-		this.cursos = cursos;
-	}
+//
+//	public Set<Curso> getCursos() {
+//		return cursos;
+//	}
+//
+//	public void setCursos(Set<Curso> cursos) {
+//		this.cursos = cursos;
+//	}
 
 	public void setDataString(String data) throws Exception {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
