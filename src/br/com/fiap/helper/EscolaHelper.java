@@ -22,4 +22,9 @@ public class EscolaHelper {
 			return e.getMessage();
 		}
 	}
+	
+	public List<Escola> listarEscolas() {
+		TypedQuery<Escola> query = em.createQuery("Select e from Escola e", Escola.class);
+		return query.getResultList();
+	}
 }

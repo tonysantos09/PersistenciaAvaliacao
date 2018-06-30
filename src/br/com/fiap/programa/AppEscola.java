@@ -15,6 +15,8 @@ import br.com.fiap.entidades.Aluno;
 import br.com.fiap.entidades.Curso;
 import br.com.fiap.entidades.Escola;
 import br.com.fiap.entidades.Matricula;
+import br.com.fiap.helper.AlunoHelper;
+import br.com.fiap.helper.CursoHelper;
 import br.com.fiap.helper.EscolaHelper;
 import br.com.fiap.jdbc.JdbcAlunoCursoDao;
 import br.com.fiap.jdbc.JdbcAlunoDao;
@@ -28,6 +30,8 @@ import br.com.fiap.viewmodel.CursoAlunoViewModel;
 import br.com.fiap.viewmodel.EscolaCursoViewModel;
 
 public class AppEscola {
+	private static EntityManager em;
+	
 	public static void main(String[] args) {
 
 		int opcao = JOptionPane.YES_OPTION;
@@ -47,7 +51,7 @@ public class AppEscola {
 					incluirEscolaJPA();
 					break;
 				case "Incluir Curso":
-					incluirCurso();
+					incluirCursoJPA();
 					break;
 				case "Incluir Aluno":
 					incluirAluno();
@@ -82,13 +86,15 @@ public class AppEscola {
 		}
 
 	}
+	
+	public AppEscola() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+		EntityManagerFactory emf = (EntityManagerFactory) context.getBean("myEmf");
+		em = emf.createEntityManager();
+	}
 
 	private static void incluirEscolaJPA() throws Exception {
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-			
-			EntityManagerFactory emf = (EntityManagerFactory) context.getBean("myEmf");
-			EntityManager em = emf.createEntityManager();
 			EscolaHelper helper = new EscolaHelper(em);
 
 			Escola escola = new Escola();
@@ -120,6 +126,28 @@ public class AppEscola {
 		}
 	}
 
+	private static void incluirCursoJPA() throws Exception {
+		try {
+			CursoHelper helperCurso = new CursoHelper(em);
+			EscolaHelper helperEscola = new EscolaHelper(em);
+			
+			List<Escola> escolas = helperEscola.listarEscolas();
+
+			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
+					JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
+
+			Curso curso = new Curso();
+			curso.setDescricao(JOptionPane.showInputDialog("Descrição do curso"));
+			curso.setEscola(escola);
+
+			helperCurso.salvar(curso);
+			JOptionPane.showMessageDialog(null, "Curso incluído com sucesso");
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	private static void incluirCurso() throws Exception {
 		try {
 			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
@@ -142,6 +170,21 @@ public class AppEscola {
 		}
 	}
 
+	private static void incluirAlunoJPA() throws Exception {
+		try {
+			AlunoHelper helper = new AlunoHelper(em);
+
+			Aluno aluno = new Aluno();
+			aluno.setNome(JOptionPane.showInputDialog("Nome do aluno"));
+
+			helper.salvar(aluno);
+			JOptionPane.showMessageDialog(null, "Aluno incluído com sucesso");
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	private static void incluirAluno() throws Exception {
 		try {
 			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
@@ -156,7 +199,7 @@ public class AppEscola {
 		} catch (Exception e) {
 			throw e;
 		}
-	}
+	}	
 
 	private static void matricularCurso() throws Exception {
 		try {
