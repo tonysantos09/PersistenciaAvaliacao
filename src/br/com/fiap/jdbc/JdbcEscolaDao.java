@@ -18,22 +18,15 @@ public class JdbcEscolaDao {
 	}
 
 	public void incluirEscola(Escola escola) throws Exception {
-		try {
-			String sql = "INSERT INTO escola " + "(descricao,endereco,datafundacao) VALUES (?,?,?)";
-			this.jdbcTemplate.update(sql, escola.getDescricao(), escola.getEndereco(), escola.getDataFundacao());
-		} catch (Exception e) {
-			throw e;
-		}
+		String sql = "INSERT INTO escola " + "(descricao,endereco,datafundacao) VALUES (?,?,?)";
+		this.jdbcTemplate.update(sql, escola.getDescricao(), escola.getEndereco(), escola.getDataFundacao());
 	}
 
 	public Escola buscarEscola(int id) throws Exception {
 		Escola escola = null;
-		try {
-			String query = "SELECT * FROM escola WHERE id= ? ";
-			escola = this.jdbcTemplate.queryForObject(query, new Integer[] { id }, new EscolaMapper());
-		} catch (Exception e) {
-			throw e;
-		}
+
+		String query = "SELECT * FROM escola WHERE id= ? ";
+		escola = this.jdbcTemplate.queryForObject(query, new Integer[] { id }, new EscolaMapper());
 
 		return escola;
 	}

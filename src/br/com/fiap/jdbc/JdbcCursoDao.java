@@ -18,64 +18,48 @@ public class JdbcCursoDao {
 	}
 
 	public void incluirCurso(Curso curso) throws Exception {
-		try {
-			String sql = "INSERT INTO curso " + "(idescola,descricao) VALUES (?,?)";
-			jdbcTemplate.update(sql, curso.getEscola().getId(), curso.getDescricao());
-		} catch (Exception e) {
-			throw e;
-		}
+		String sql = "INSERT INTO curso " + "(idescola,descricao) VALUES (?,?)";
+		jdbcTemplate.update(sql, curso.getEscola().getId(), curso.getDescricao());
 	}
 
 	public Curso buscarCurso(int id) throws Exception {
 		Curso curso = null;
-		try {
-			String query = "SELECT * FROM curso WHERE id= ? ";
-			curso = this.jdbcTemplate.queryForObject(query, new Integer[] { id }, new CursoMapper());
-		} catch (Exception e) {
-			throw e;
-		}
+
+		String query = "SELECT * FROM curso WHERE id= ? ";
+		curso = this.jdbcTemplate.queryForObject(query, new Integer[] { id }, new CursoMapper());
+		
 		return curso;
 	}
 
 	public List<Curso> listarCursos(int idescola) throws Exception {
 		List<Curso> cursos = new ArrayList<>();
-		try {
-			cursos = this.jdbcTemplate.query("SELECT * FROM curso WHERE idescola=?", new Integer[] { idescola },
+		
+		cursos = this.jdbcTemplate.query("SELECT * FROM curso WHERE idescola=?", new Integer[] { idescola },
 					new CursoMapper());
-		} catch (Exception e) {
-			throw e;
-		}
-
+		
 		return cursos;
 	}
 
 	public List<Curso> listarCursosComAlunos(int idescola) {
 		List<Curso> cursos = new ArrayList<>();
-		try {
-			cursos = this.jdbcTemplate.query("SELECT DISTINCT curso.* FROM matricula LEFT JOIN curso ON "
+		
+		cursos = this.jdbcTemplate.query("SELECT DISTINCT curso.* FROM matricula LEFT JOIN curso ON "
 					+ "matricula.idcurso = curso.id WHERE matricula.idcurso = curso.id "
 					+ "AND curso.idescola=?", 
 					new Integer[] { idescola },
 					new CursoMapper());
-		} catch (Exception e) {
-			throw e;
-		}
-
+		
 		return cursos;
 	}
 	
-	public List<Curso> listarCursosMatricula(int idaluno) {
+	public List<Curso> listarCursosPorEscola(int idescola) {
 		List<Curso> cursos = new ArrayList<>();
-		try {
-			cursos = this.jdbcTemplate.query("SELECT curso.* FROM curso LEFT JOIN matricula ON "
-					+ "curso.id = matricula.idcurso AND matricula.idaluno = ? "
-					+ "WHERE matricula.idaluno IS NULL", 
-					new Integer[] { idaluno },
-					new CursoMapper());
-		} catch (Exception e) {
-			throw e;
-		}
 
+		cursos = this.jdbcTemplate.query("SELECT curso.* FROM curso "
+					+ "WHERE curso.idescola = ?", 
+					new Integer[] { idescola },
+					new CursoMapper());
+		
 		return cursos;
 	}
 }

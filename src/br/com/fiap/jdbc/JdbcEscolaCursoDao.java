@@ -19,17 +19,14 @@ public class JdbcEscolaCursoDao {
 
 	public List<EscolaCursoViewModel> listarEscolasComCursos() {
 		List<EscolaCursoViewModel> escolas = new ArrayList<>();
-		try {
-			escolas = this.jdbcTemplate.query(
-					"SELECT escola.descricao, Count(curso.id) AS numcursos, "
-							+ "Count(DISTINCT matricula.idaluno) AS numalunos "
-							+ "FROM (matricula INNER JOIN curso ON matricula.idcurso = curso.id) "
-							+ "INNER JOIN escola ON curso.idescola = escola.id "
+
+		escolas = this.jdbcTemplate.query(
+					"SELECT escola.descricao, Count(*) AS numcursos "
+							+ "FROM escola "
+							+ "LEFT JOIN curso ON curso.idescola = escola.id "
 							+ "GROUP BY escola.descricao",
 					new EscolaCursoMapper());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 		return escolas;
 	}
 }

@@ -3,10 +3,13 @@ package br.com.fiap.programa;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.dao.DataAccessException;
 
 import br.com.fiap.entidades.Aluno;
 import br.com.fiap.entidades.Curso;
@@ -26,236 +29,247 @@ import br.com.fiap.viewmodel.EscolaCursoViewModel;
 public class FuncoesJDBC {
 
 	 static void incluirEscola() throws Exception {
-		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-			JdbcEscolaDao dao = (JdbcEscolaDao) context.getBean("jdbcEscolaDao");
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+		JdbcEscolaDao dao = (JdbcEscolaDao) context.getBean("jdbcEscolaDao");
 
-			Escola escola = new Escola();
-			escola.setDescricao(JOptionPane.showInputDialog("Descrição da escola"));
-			escola.setDataString(JOptionPane.showInputDialog("Data de Fundação"));
-			escola.setEndereco(JOptionPane.showInputDialog("Endereço da escola"));
+		Escola escola = new Escola();
+		escola.setDescricao(JOptionPane.showInputDialog("Descrição da escola"));
+		escola.setDataString(JOptionPane.showInputDialog("Data de Fundação"));
+		escola.setEndereco(JOptionPane.showInputDialog("Endereço da escola"));
 
-			dao.incluirEscola(escola);
-			JOptionPane.showMessageDialog(null, "Escola incluída com sucesso");
-		} catch (Exception e) {
-			throw e;
-		}
+		dao.incluirEscola(escola);
+		JOptionPane.showMessageDialog(null, "Escola incluída com sucesso");
 	}
 
 	 static void incluirCurso() throws Exception {
-		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolas();
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+		List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolas();
 
-			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
-					JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
+		Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
+				JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
 
-			JdbcCursoDao dao = (JdbcCursoDao) context.getBean("jdbcCursoDao");
+		JdbcCursoDao dao = (JdbcCursoDao) context.getBean("jdbcCursoDao");
 
-			Curso curso = new Curso();
-			curso.setDescricao(JOptionPane.showInputDialog("Descrição do curso"));
-			curso.setEscola(escola);
+		Curso curso = new Curso();
+		curso.setDescricao(JOptionPane.showInputDialog("Descrição do curso"));
+		curso.setEscola(escola);
 
-			dao.incluirCurso(curso);
-			JOptionPane.showMessageDialog(null, "Curso incluído com sucesso");
-
-		} catch (Exception e) {
-			throw e;
-		}
+		dao.incluirCurso(curso);
+		JOptionPane.showMessageDialog(null, "Curso incluído com sucesso");
 	}
 
 	 static void incluirAluno() throws Exception {
-		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-			JdbcAlunoDao dao = (JdbcAlunoDao) context.getBean("jdbcAlunoDao");
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+		JdbcAlunoDao dao = (JdbcAlunoDao) context.getBean("jdbcAlunoDao");
 
-			Aluno aluno = new Aluno();
-			aluno.setNome(JOptionPane.showInputDialog("Nome do aluno"));
+		Aluno aluno = new Aluno();
+		aluno.setNome(JOptionPane.showInputDialog("Nome do aluno"));
 
-			dao.incluirAluno(aluno);
-			JOptionPane.showMessageDialog(null, "Aluno incluído com sucesso");
-
-		} catch (Exception e) {
-			throw e;
-		}
+		dao.incluirAluno(aluno);
+		JOptionPane.showMessageDialog(null, "Aluno incluído com sucesso");
 	}	
 
 	 static void matricularCurso() throws Exception {
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+
+		List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarAlunos();
+
+		Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, "Selecione o aluno", "Alunos",
+				JOptionPane.INFORMATION_MESSAGE, null, alunos.toArray(), null);
+
+		// vai trazer apenas escolas com cursos criados
+		List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
+
+		Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
+				JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
+
+		List<Curso> cursos = ((JdbcCursoDao) context.getBean("jdbcCursoDao")).listarCursosPorEscola(escola.getId());
+
+		Curso curso = (Curso) JOptionPane.showInputDialog(null, "Selecione o curso", "Cursos",
+				JOptionPane.INFORMATION_MESSAGE, null, cursos.toArray(), null);
+
+		JdbcMatriculaDao dao = (JdbcMatriculaDao) context.getBean("jdbcMatriculaDao");
+
+		Matricula matricula = new Matricula();
+		matricula.setCurso(curso);
+		matricula.setAluno(aluno);
+
 		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-
-			List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarAlunos();
-
-			Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, "Selecione o aluno", "Alunos",
-					JOptionPane.INFORMATION_MESSAGE, null, alunos.toArray(), null);
-
-			// vai trazer apenas escolas com cursos criados
-			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
-
-			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
-					JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
-
-			List<Curso> cursos = ((JdbcCursoDao) context.getBean("jdbcCursoDao")).listarCursosMatricula(aluno.getId());
-
-			Curso curso = (Curso) JOptionPane.showInputDialog(null, "Selecione o curso", "Cursos",
-					JOptionPane.INFORMATION_MESSAGE, null, cursos.toArray(), null);
-
-			JdbcMatriculaDao dao = (JdbcMatriculaDao) context.getBean("jdbcMatriculaDao");
-
-			Matricula matricula = new Matricula();
-			matricula.setCurso(curso);
-			matricula.setAluno(aluno);
-
 			dao.incluirMatricula(matricula);
 			JOptionPane.showMessageDialog(null, "Matricula efetuada com sucesso");
-
-		} catch (Exception e) {
-			throw e;
+		} catch (DataAccessException e) {
+			if (e.getCause() instanceof com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException)
+				JOptionPane.showMessageDialog(null, "Erro! Verifique se o aluno já está matriculado no curso.");
+			else
+				throw e;
 		}
 	}
 
 	 static void incluirNota() throws Exception {
-		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+		List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
 
-			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
-					JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
+		Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
+				JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
 
-			List<Curso> cursos = ((JdbcCursoDao) context.getBean("jdbcCursoDao")).listarCursosComAlunos(escola.getId());
+		List<Curso> cursos = ((JdbcCursoDao) context.getBean("jdbcCursoDao")).listarCursosComAlunos(escola.getId());
 
-			Curso curso = (Curso) JOptionPane.showInputDialog(null, "Selecione o curso", "Cursos",
-					JOptionPane.INFORMATION_MESSAGE, null, cursos.toArray(), null);
+		Curso curso = (Curso) JOptionPane.showInputDialog(null, "Selecione o curso", "Cursos",
+				JOptionPane.INFORMATION_MESSAGE, null, cursos.toArray(), null);
 
-			List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarCursoAlunos(curso.getId());
+		List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarCursoAlunos(curso.getId());
 
-			Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, "Selecione o aluno", "Alunos",
-					JOptionPane.INFORMATION_MESSAGE, null, alunos.toArray(), null);
+		Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, "Selecione o aluno", "Alunos",
+				JOptionPane.INFORMATION_MESSAGE, null, alunos.toArray(), null);
 
-			JdbcMatriculaDao dao = (JdbcMatriculaDao) context.getBean("jdbcMatriculaDao");
+		JdbcMatriculaDao dao = (JdbcMatriculaDao) context.getBean("jdbcMatriculaDao");
 
-			Matricula matricula = new Matricula();
+		Matricula matricula = new Matricula();
 
-			String nota = JOptionPane.showInputDialog("Nota do aluno");
+		String nota = JOptionPane.showInputDialog("Nota do aluno");
 
-			double valor = Double.parseDouble(nota.replace(',', '.'));
+		double valor = Double.parseDouble(nota.replace(',', '.'));
 
-			matricula.setNota(valor);
-			matricula.setAluno(aluno);
-			matricula.setCurso(curso);
+		matricula.setNota(valor);
+		matricula.setAluno(aluno);
+		matricula.setCurso(curso);
 
-			dao.incluirNota(matricula);
-			JOptionPane.showMessageDialog(null, "Nota incluída com sucesso");
-
-		} catch (Exception e) {
-			throw e;
-		}
+		dao.incluirNota(matricula);
+		JOptionPane.showMessageDialog(null, "Nota incluída com sucesso");
 	}
 
 	static void listarEscolasComCursos() {
-		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-			List<EscolaCursoViewModel> escolas = ((JdbcEscolaCursoDao) context.getBean("jdbcEscolaCursoDao"))
-					.listarEscolasComCursos();
-			for (EscolaCursoViewModel vm : escolas) {
-				System.out.println("Escola: " + vm.getDescricao());
-				System.out.println("Num. Cursos: " + vm.getNumCursos());
-				System.out.println("Num. Alunos: " + vm.getNumAlunos());
-			}
-		} catch (Exception e) {
-			throw e;
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+		List<EscolaCursoViewModel> escolas = ((JdbcEscolaCursoDao) context.getBean("jdbcEscolaCursoDao"))
+				.listarEscolasComCursos();
+		
+		Object[] cols = {
+		    "Escola","Num. Cursos"
+		};
+		
+		Object[][] rows = new Object[escolas.size()][];
+
+		for (EscolaCursoViewModel vm : escolas) {
+			Object[] row = new Object[2];
+			row[0] = vm.getDescricao();
+			row[1] = vm.getNumCursos();
+			
+			rows[escolas.indexOf(vm)] = row;		
 		}
+		
+		JTable table = new JTable(rows, cols);
+		JOptionPane.showMessageDialog(null, new JScrollPane(table));
 	}
 
 	static void listarCursosComAlunos() throws Exception {
-		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+		List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
 
-			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
-					JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
+		Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
+				JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
 
-			List<CursoAlunoViewModel> cursos = ((JdbcCursoAlunoDao) context.getBean("jdbcCursoAlunoDao"))
-					.listarCursosQtdAluno(escola.getId());
+		List<CursoAlunoViewModel> cursos = ((JdbcCursoAlunoDao) context.getBean("jdbcCursoAlunoDao"))
+				.listarCursosQtdAluno(escola.getId());
+		
+		Object[] cols = {
+		    "Curso","Num. Alunos"
+		};
+
+		Object[][] rows = new Object[cursos.size()][];
+
+		for (CursoAlunoViewModel vm : cursos) {
+			Object[] row = new Object[2];
+			row[0] = vm.getDescricao();
+			row[1] = vm.getNumAlunos();
 			
-			String output;
-			for (CursoAlunoViewModel vm : cursos) {
-				System.out.println("Curso: " + vm.getDescricao());
-				System.out.println("Num. Alunos: " + vm.getNumAlunos());
-			}		
-			
-		} catch (Exception e) {
-			throw e;
-		}
+			rows[cursos.indexOf(vm)] = row;	
+		}		
+
+		JTable table = new JTable(rows, cols);
+		JOptionPane.showMessageDialog(null, new JScrollPane(table));			
 	}
 
 	 static void listarAlunosDeCurso() throws Exception {
-		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-			List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+		List<Escola> escolas = ((JdbcEscolaDao) context.getBean("jdbcEscolaDao")).listarEscolasComCursos();
 
-			Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
-					JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
+		Escola escola = (Escola) JOptionPane.showInputDialog(null, "Selecione a escola", "Escolas",
+				JOptionPane.INFORMATION_MESSAGE, null, escolas.toArray(), null);
 
-			List<Curso> cursos = ((JdbcCursoDao) context.getBean("jdbcCursoDao")).listarCursos(escola.getId());
+		List<Curso> cursos = ((JdbcCursoDao) context.getBean("jdbcCursoDao")).listarCursos(escola.getId());
 
-			Curso curso = (Curso) JOptionPane.showInputDialog(null, "Selecione o curso", "Cursos",
-					JOptionPane.INFORMATION_MESSAGE, null, cursos.toArray(), null);
+		Curso curso = (Curso) JOptionPane.showInputDialog(null, "Selecione o curso", "Cursos",
+				JOptionPane.INFORMATION_MESSAGE, null, cursos.toArray(), null);
 
-			String[] optNota = { "Sim", "Não" };
+		String[] optNota = { "Sim", "Não" };
 
-			String select = (String) JOptionPane.showInputDialog(null, "Deseja visualizar nota?", "Menu",
-					JOptionPane.INFORMATION_MESSAGE, null, optNota, null);
+		String select = (String) JOptionPane.showInputDialog(null, "Deseja visualizar nota?", "Menu",
+				JOptionPane.INFORMATION_MESSAGE, null, optNota, null);
 
-			List<AlunoCursoViewModel> alunos = ((JdbcAlunoCursoDao) context.getBean("jdbcAlunoCursoDao"))
-					.listarAlunosDeCurso(curso.getId());
-			System.out.println("Escola: " + escola.getDescricao());
-			System.out.println("Curso: " + curso.getDescricao());
+		List<AlunoCursoViewModel> alunos = ((JdbcAlunoCursoDao) context.getBean("jdbcAlunoCursoDao"))
+				.listarAlunosDeCurso(curso.getId());
+		
+		Object[] cols = {
+			    "Escola","Curso", "Aluno", "Nota"
+			};
+		
+		Object[][] rows = new Object[alunos.size()][];
 
-			if (select == "Não") {
-				for (AlunoCursoViewModel vm : alunos) {
-					System.out.println("Nome Aluno: " + vm.getNomealuno());
-				}
-			} else {
-				for (AlunoCursoViewModel vm : alunos) {
-					System.out.println("Nome Aluno: " + vm.getNomealuno() + " - Nota: " + vm.getNota());
-				}
-			}
-
-		} catch (Exception e) {
-			throw e;
-		}
+		for (AlunoCursoViewModel vm : alunos) {
+			Object[] row = new Object[4];
+			row[0] = vm.getEscola();
+			row[1] = vm.getDescricao();
+			row[2] = vm.getNomealuno();
+			
+			if (select == "Sim")
+				row[3] = vm.getNota();
+			else
+				row[3] = "";
+			
+			rows[alunos.indexOf(vm)] = row;	
+		}		
+	
+		JTable table = new JTable(rows, cols);
+		JOptionPane.showMessageDialog(null, new JScrollPane(table));			
+		
 	}
 
 	 static void listarAlunoCursos() throws BeansException, Exception {
-		try {
-			ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
 
-			List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarAlunos();
+		List<Aluno> alunos = ((JdbcAlunoDao) context.getBean("jdbcAlunoDao")).listarAlunos();
 
-			Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, "Selecione o aluno", "Alunos",
-					JOptionPane.INFORMATION_MESSAGE, null, alunos.toArray(), null);
-			
-			String[] optNota = { "Sim", "Não" };
+		Aluno aluno = (Aluno) JOptionPane.showInputDialog(null, "Selecione o aluno", "Alunos",
+				JOptionPane.INFORMATION_MESSAGE, null, alunos.toArray(), null);
+		
+		String[] optNota = { "Sim", "Não" };
 
-			String select = (String) JOptionPane.showInputDialog(null, "Deseja visualizar nota?", "Menu",
-					JOptionPane.INFORMATION_MESSAGE, null, optNota, null);
+		String select = (String) JOptionPane.showInputDialog(null, "Deseja visualizar nota?", "Menu",
+				JOptionPane.INFORMATION_MESSAGE, null, optNota, null);
+		
+		List<AlunoCursoViewModel> cursos = ((JdbcAlunoCursoDao) context.getBean("jdbcAlunoCursoDao"))
+				.listarAlunoCursos(aluno.getId());
+		
+		Object[] cols = {
+			    "Aluno","Curso", "Nota"
+			};
+		
+		Object[][] rows = new Object[cursos.size()][];
+
+		for (AlunoCursoViewModel vm : cursos) {
+			Object[] row = new Object[3];
+			row[0] = vm.getNomealuno();
+			row[1] = vm.getDescricao();
 			
-			List<AlunoCursoViewModel> cursos = ((JdbcAlunoCursoDao) context.getBean("jdbcAlunoCursoDao"))
-					.listarAlunoCursos(aluno.getId());
-			System.out.println("Nome Aluno: " + aluno.getNome());
-			if (select == "Não") {
-				for (AlunoCursoViewModel vm : cursos) {
-					System.out.println("Curso: " + vm.getDescricao());
-				}
-			} else {
-				for (AlunoCursoViewModel vm : cursos) {
-					System.out.println("Curso: " + vm.getDescricao() + " - Nota: " + vm.getNota());
-				}
-			}
+			if (select == "Sim")
+				row[2] = vm.getNota();
+			else
+				row[2] = "";
 			
-		} catch (Exception e) {
-			throw e;
-		}
+			rows[cursos.indexOf(vm)] = row;	
+		}		
+	
+		JTable table = new JTable(rows, cols);
+		JOptionPane.showMessageDialog(null, new JScrollPane(table));
 	}
 }

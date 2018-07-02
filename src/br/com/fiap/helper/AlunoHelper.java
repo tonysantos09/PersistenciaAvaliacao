@@ -10,10 +10,9 @@ public class AlunoHelper {
 		this.em = em;
 	}
 
-	public String salvar(Aluno aluno) {
+	public void salvar(Aluno aluno) {
 		em.getTransaction().begin();
 		em.persist(aluno);
 		em.getTransaction().commit();
-		return "Aluno incluído com sucesso!";
 	}
 }

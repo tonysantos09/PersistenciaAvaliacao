@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import br.com.fiap.viewmodel.AlunoCursoViewModel;
 
 public class AlunoCursoMapper implements RowMapper<AlunoCursoViewModel> {
+	
 	@Override
 	public AlunoCursoViewModel mapRow(ResultSet rs, int arg1) throws SQLException {
 		AlunoCursoViewModel vm = new AlunoCursoViewModel();

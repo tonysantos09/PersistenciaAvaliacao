@@ -13,21 +13,13 @@ public class JdbcMatriculaDao {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
-	public void incluirMatricula(Matricula matricula) throws Exception {
-		try {
-			String sql = "INSERT INTO matricula " + "(idcurso, idaluno) VALUES (?,?)";
-			jdbcTemplate.update(sql, matricula.getCurso().getId(), matricula.getAluno().getId());
-		} catch (Exception e) {
-			throw e;
-		}
+	public void incluirMatricula(Matricula matricula) {
+		String sql = "INSERT INTO matricula " + "(idcurso, idaluno) VALUES (?,?)";
+		jdbcTemplate.update(sql, matricula.getCurso().getId(), matricula.getAluno().getId());
 	}	
 
-	public void incluirNota(Matricula matricula) throws Exception {
-		try {
-			String sql = "UPDATE matricula SET nota = ? WHERE idcurso = ? AND idaluno = ?";
-			jdbcTemplate.update(sql, matricula.getNota(), matricula.getCurso().getId(), matricula.getAluno().getId());
-		} catch (Exception e) {
-			throw e;
-		}
+	public void incluirNota(Matricula matricula) {
+		String sql = "UPDATE matricula SET nota = ? WHERE idcurso = ? AND idaluno = ?";
+		jdbcTemplate.update(sql, matricula.getNota(), matricula.getCurso().getId(), matricula.getAluno().getId());
 	}
 }
